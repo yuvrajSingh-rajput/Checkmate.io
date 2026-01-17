@@ -3,22 +3,10 @@ import { Chess } from 'chess.js';
 import type { AnalyzedMove, MoveClassification, GameInfo, AnalysisState } from '@/types/chess';
 import { useChessSounds } from './useChessSounds';
 import { useStockfishEngine, type AnalysisNode } from './useStockfishEngine';
+import { classifyMove, calculateWinChance } from '@/utils/analysisLogic';
 
 // Real move classification based on evaluation difference
-function getClassification(evalDiff: number): MoveClassification {
-  const absDiff = Math.abs(evalDiff);
-  
-  if (absDiff < 0.05) return 'best';
-  if (absDiff < 0.1) return 'good';
-  if (absDiff < 0.25) return 'inaccuracy';
-  if (absDiff < 0.5) return 'mistake';
-  return 'blunder';
-}
 
-function evalToWinChance(evaluation: number): number {
-  const k = 0.004;
-  return 50 + 50 * (2 / (1 + Math.exp(-k * evaluation * 100)) - 1);
-}
 
 function parsePGNHeaders(pgn: string): GameInfo {
   const info: GameInfo = {
@@ -65,13 +53,13 @@ function calcAccuracy(moves: AnalyzedMove[]): number {
     switch (m.classification) {
       case 'brilliant': return 100;
       case 'best': return 100;
-      case 'excellent': return 97;
-      case 'miss': return 95;
+      case 'excellent': return 98;
       case 'good': return 90;
       case 'book': return 100;
       case 'forced': return 100;
       case 'inaccuracy': return 80;
-      case 'mistake': return 70;
+      case 'miss': return 60; // Penalize misses
+      case 'mistake': return 50;
       case 'blunder': return 0;
       default: return 80;
     }
@@ -132,7 +120,7 @@ async function fallbackAnalysis(history: any[], gameInfo: GameInfo, setState: Re
       fen: analysisChess.fen(),
       evaluation: evaluation,
       classification,
-      winChance: evalToWinChance(evaluation),
+      winChance: calculateWinChance(evaluation * 100) * 100,
     };
     
     analyzedMoves.push(analyzedMove);
@@ -213,21 +201,35 @@ export function useStockfishAnalysis() {
         if (analysisNode) {
           evaluation = analysisNode.score / 100;
           bestMove = analysisNode.bestMove || '';
-          winChance = analysisNode.winProb * 100;
+          
+          // Use centipawns for win chance to match analysisLogic expectations
+          // calculateWinChance returns 0-1, we want 0-100
+          winChance = calculateWinChance(analysisNode.score) * 100;
           
           if (i > 0) {
-            const prevNode = analysis.get(fens[i - 1]);
-            if (prevNode) {
-              const prevEval = prevNode.score / 100;
-              const diff = Math.abs(evaluation - prevEval);
-              classification = getClassification(diff);
+            const prevMove = analyzedMoves[i-1];
+            // Get previous score in centipawns. 
+            // We need to reconstruct it from prevMove.evaluation * 100 or store it?
+            // analyzedMoves stores evaluation in Pawns. So * 100.
+            const prevScoreCp = prevMove.evaluation * 100;
+            const currentScoreCp = analysisNode.score;
+            
+            const classificationObj = classifyMove(prevScoreCp, currentScoreCp, move.color);
+            classification = classificationObj.label.toLowerCase() as MoveClassification;
+            
+            // Check for Miss
+            // "a miss is when one player blunders or makes a mistake and the other player misses the best or excellent move"
+            if ((prevMove.classification === 'blunder' || prevMove.classification === 'mistake') && 
+                (classification !== 'best' && classification !== 'excellent' && classification !== 'brilliant')) {
+              classification = 'miss';
             }
           }
         } else {
           console.warn('[StockfishAnalysis] No analysis found for FEN:', fen, 'Using defaults');
           classification = getMockClassification(i);
           evaluation = getMockEvaluation(i);
-          winChance = evalToWinChance(evaluation);
+          // Fallback win chance
+          winChance = calculateWinChance(evaluation * 100) * 100;
         }
         
         analyzedMoves.push({

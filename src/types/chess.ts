@@ -1,9 +1,11 @@
 export type MoveClassification = 
   | 'brilliant' 
   | 'best' 
+  | 'excellent'
   | 'good' 
   | 'inaccuracy' 
   | 'mistake' 
+  | 'miss'
   | 'blunder' 
   | 'book'
   | 'forced';
@@ -58,9 +60,9 @@ export const CLASSIFICATION_CONFIG: Record<MoveClassification, {
   excellent: {
     label: 'Excellent',
     symbol: '🖒',
-    color: 'hsl(var(--move-best))',
-    bgClass: 'bg-move-best',
-    textClass: 'text-move-best',
+    color: 'hsl(var(--move-excellent))',
+    bgClass: 'bg-move-excellent',
+    textClass: 'text-move-excellent',
   },
   best: {
     label: 'Best',
@@ -89,6 +91,13 @@ export const CLASSIFICATION_CONFIG: Record<MoveClassification, {
     color: 'hsl(var(--move-mistake))',
     bgClass: 'bg-move-mistake',
     textClass: 'text-move-mistake',
+  },
+  miss: {
+    label: 'Miss',
+    symbol: '∅', 
+    color: 'hsl(var(--move-miss))',
+    bgClass: 'bg-move-miss',
+    textClass: 'text-move-miss',
   },
   blunder: {
     label: 'Blunder',

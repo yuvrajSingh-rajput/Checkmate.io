@@ -45,9 +45,11 @@
     /* Move Classification Colors */
     --move-brilliant: 185 90% 50%;
     --move-best: 145 72% 50%;
+    --move-excellent: 150 65% 55%;
     --move-good: 165 60% 45%;
     --move-inaccuracy: 45 95% 55%;
     --move-mistake: 25 95% 55%;
+    --move-miss: 0 85% 65%;
     --move-blunder: 0 80% 55%;
 
     /* Evaluation Bar Gradients */
