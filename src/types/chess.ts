@@ -55,6 +55,13 @@ export const CLASSIFICATION_CONFIG: Record<MoveClassification, {
     bgClass: 'bg-move-brilliant',
     textClass: 'text-move-brilliant',
   },
+  excellent: {
+    label: 'Excellent',
+    symbol: '🖒',
+    color: 'hsl(var(--move-best))',
+    bgClass: 'bg-move-best',
+    textClass: 'text-move-best',
+  },
   best: {
     label: 'Best',
     symbol: '★',
@@ -92,6 +99,7 @@ export const CLASSIFICATION_CONFIG: Record<MoveClassification, {
   },
   book: {
     label: 'Book',
+    // symbol: '🕮',
     symbol: '📖',
     color: 'hsl(var(--muted-foreground))',
     bgClass: 'bg-muted',

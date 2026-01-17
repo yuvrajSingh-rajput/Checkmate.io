@@ -27,16 +27,16 @@ interface AnalysisPanelProps {
   className?: string;
 }
 
-const SAMPLE_PGN = `[Event "Live Chess"]
-[Site "Chess.com"]
-[Date "2024.01.15"]
-[White "Magnus"]
-[Black "Hikaru"]
-[WhiteElo "2850"]
-[BlackElo "2800"]
+const SAMPLE_PGN = `[Event "Opera Game"]
+[Site "Paris, France"]
+[Date "1858.??.??"]
+[Round "?"]
+[White "Paul Morphy"]
+[Black "Duke Karl / Count Isouard"]
 [Result "1-0"]
+[ECO "C41"]
 
-1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 8. c3 O-O 9. h3 Nb8 10. d4 Nbd7 11. Nbd2 Bb7 12. Bc2 Re8 13. Nf1 Bf8 14. Ng3 g6 15. a4 c5 16. d5 c4 17. Bg5 h6 18. Be3 Nc5 19. Qd2 h5 20. Bg5 Be7 21. Rf1 Nh7 22. Be3 Rf8 23. Nh2 Bg5 24. Bxg5 Nxg5 25. Qe3 Qf6 26. f4 exf4 27. Qxf4 Qxf4 28. Rxf4 Ne6 29. Rf2 Ng5 30. Raf1 Rae8 31. Nf3 Nxf3+ 32. Rxf3 Nd3 33. Bxd3 cxd3 34. Rxd3 bxa4 35. Rdf3 Rxf3 36. Rxf3 Bc8 37. Rc3 Kf8 38. Nf1 Ke7 39. Ne3 Kd8 40. Kf2 Rf8+ 41. Kg3 Rf4 42. Nc4 Rxe4 43. Nxd6 Rd4 44. c4 1-0`;
+1. e4 e5 2. Nf3 d6 3. d4 Bg4 4. dxe5 Bxf3 5. Qxf3 dxe5 6. Bc4 Nf6 7. Qb3 Qe7 8. Nc3 c6 9. Bg5 b5 10. Nxb5 cxb5 11. Bxb5+ Nbd7 12. O-O-O Rd8 13. Rxd7 Rxd7 14. Rd1 Qe6 15. Bxd7+ Nxd7 16. Qb8+ Nxb8 17. Rd8# 1-0`;
 
 export function AnalysisPanel({
   moves,

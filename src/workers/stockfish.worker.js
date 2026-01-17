@@ -1,10 +1,10 @@
-// Stockfish Worker Wrapper (Plain JavaScript)
+// Stockfish Worker Wrapper (ES Module)
 
 // Configure Module before importing Stockfish
 self.Module = {
   locateFile: function(path) {
     if (path.endsWith('.wasm')) {
-      return '/engine/stockfish-17.1-lite-single-03e3232.wasm';
+      return new URL('/engine/stockfish-17.1-lite-single-03e3232.wasm', import.meta.url).href;
     }
     return path;
   },
