@@ -1,5 +1,6 @@
 export type MoveClassification = 
   | 'brilliant' 
+  | 'great'
   | 'best' 
   | 'excellent'
   | 'good' 
@@ -9,6 +10,18 @@ export type MoveClassification =
   | 'blunder' 
   | 'book'
   | 'forced';
+
+export interface EngineLine {
+  id: number;
+  depth: number;
+  evaluation: {
+    type: 'cp' | 'mate';
+    value: number;
+    mateIn?: number; // Mate distance (positive = White mates, negative = Black mates)
+  };
+  moveUCI: string;
+  moveSAN?: string;
+}
 
 export interface AnalyzedMove {
   moveNumber: number;
@@ -21,6 +34,8 @@ export interface AnalyzedMove {
   classification: MoveClassification;
   bestMove?: string;
   winChance: number;
+  opening?: string;
+  engineLines?: EngineLine[]; // Top 2 engine lines for next moves
 }
 
 export interface GameInfo {
@@ -56,6 +71,13 @@ export const CLASSIFICATION_CONFIG: Record<MoveClassification, {
     color: 'hsl(var(--move-brilliant))',
     bgClass: 'bg-move-brilliant',
     textClass: 'text-move-brilliant',
+  },
+  great: {
+    label: 'Great',
+    symbol: '!',
+    color: 'hsl(var(--move-great))',
+    bgClass: 'bg-move-great',
+    textClass: 'text-move-great',
   },
   excellent: {
     label: 'Excellent',
