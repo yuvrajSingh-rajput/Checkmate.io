@@ -31,6 +31,7 @@ export interface AnalyzedMove {
   color: 'w' | 'b';
   fen: string;
   evaluation: number;
+  mateIn?: number; // Mate distance (positive = White mates, negative = Black mates)
   classification: MoveClassification;
   bestMove?: string;
   winChance: number;

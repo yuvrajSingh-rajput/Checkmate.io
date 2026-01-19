@@ -55,6 +55,11 @@ export function ChessBoard({
     return moves[currentMoveIndex]?.evaluation || 0;
   }, [moves, currentMoveIndex]);
 
+  const currentMateIn = useMemo(() => {
+    if (currentMoveIndex < 0 || moves.length === 0) return undefined;
+    return moves[currentMoveIndex]?.mateIn;
+  }, [moves, currentMoveIndex]);
+
   const currentMove = currentMoveIndex >= 0 ? moves[currentMoveIndex] : null;
 
   const chess = useMemo(() => new Chess(currentFen), [currentFen]);
@@ -169,6 +174,7 @@ export function ChessBoard({
       <div className="flex gap-3 items-stretch">
         <EvaluationBar 
           evaluation={currentEval} 
+          mateIn={currentMateIn}
           isFlipped={isFlipped}
           className="min-h-[300px]" 
           style={{ height: boardWidth }} 

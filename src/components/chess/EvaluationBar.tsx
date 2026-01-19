@@ -1,30 +1,39 @@
 import { cn } from '@/lib/utils';
 import { CSSProperties } from 'react';
+import { getWinningChance } from '@/lib/chess/classification';
 
 interface EvaluationBarProps {
   evaluation: number;
+  mateIn?: number;
   isFlipped?: boolean;
   className?: string;
   style?: CSSProperties;
 }
 
-export function EvaluationBar({ evaluation, isFlipped = false, className, style }: EvaluationBarProps) {
-  // Convert evaluation (-100 to 100 for mate) to percentage (0-100)
-  // Clamp to reasonable range
-  const clampedEval = Math.max(-10, Math.min(10, evaluation));
-  
-  // Calculate white's percentage (50% is equal, 100% is winning for white)
-  const whitePercent = 50 + (clampedEval / 10) * 50;
+export function EvaluationBar({ evaluation, mateIn, isFlipped = false, className, style }: EvaluationBarProps) {
+  /**
+   * Evaluation bar MUST be WHITE-RELATIVE:
+   * - evaluation is in pawns (positive = White better, negative = Black better)
+   * - mateIn (if provided) is also WHITE-RELATIVE (positive = White mates)
+   *
+   * The fill should be based on win probability (Chess.com style),
+   * not a linear clamp of pawns.
+   */
+  const cpWhite = evaluation * 100;
+
+  // getWinningChance returns 0..1 (WHITE winning chance)
+  const whiteChance = getWinningChance(cpWhite, mateIn);
+  const whitePercent = Math.max(0.1, Math.min(99.9, whiteChance * 100));
   
   // When flipped, we need to invert the visual (white on top when flipped)
   const displayPercent = isFlipped ? (100 - whitePercent) : whitePercent;
   
-  const displayEval = Math.abs(evaluation) >= 100
-    ? (evaluation > 0 ? '+M' : '-M')
+  const displayEval = mateIn !== undefined
+    ? (mateIn > 0 ? '+M' : '-M')
     : (evaluation > 0 ? `+${evaluation.toFixed(1)}` : evaluation.toFixed(1));
 
   // Determine text position based on who's winning and board orientation
-  const isWhiteWinning = evaluation >= 0;
+  const isWhiteWinning = mateIn !== undefined ? mateIn > 0 : evaluation >= 0;
   const textOnBottom = isFlipped ? !isWhiteWinning : isWhiteWinning;
 
   return (

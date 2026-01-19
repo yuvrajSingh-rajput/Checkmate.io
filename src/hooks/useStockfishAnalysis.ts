@@ -364,10 +364,12 @@ export function useStockfishAnalysis() {
           // This is WHITE-RELATIVE: positive = white winning, negative = black winning
           const evaluationAfterMove = evaluatedPosition?.topLines?.[0]?.evaluation;
           let engineEvalWhite = 0;
+          let mateInWhite: number | undefined = undefined;
           if (evaluationAfterMove) {
             if (evaluationAfterMove.type === 'mate') {
               // For mate, use placeholder CP for display (mate shows as ±3000cp equivalent)
               engineEvalWhite = evaluationAfterMove.mateIn && evaluationAfterMove.mateIn > 0 ? 3000 : -3000;
+              mateInWhite = evaluationAfterMove.mateIn;
             } else {
               engineEvalWhite = evaluationAfterMove.value || 0;
             }
@@ -412,6 +414,7 @@ export function useStockfishAnalysis() {
             color: move.color,
             fen: fenAfterMove,
             evaluation: engineEvalWhite / 100, // convert centipawns -> pawns (WHITE-RELATIVE)
+            mateIn: mateInWhite,
             classification,
             bestMove, // PV1 from previous position
             winChance: whiteWinProb, // Engine-provided WHITE-RELATIVE win probability (0-100), never recomputed
